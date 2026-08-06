@@ -27,7 +27,7 @@ export class ShowtimesService {
     const dayEnd = new Date(`${date}T23:59:59.999Z`);
     return this.showtimesRepo.find({
       where: { startTime: Between(dayStart, dayEnd) },
-      relations: ['movie', 'room'],
+      relations: {movie:true, room:true},
       order: { startTime: 'ASC' },
     });
   }
@@ -35,7 +35,7 @@ export class ShowtimesService {
   async findById(id: string): Promise<Showtime> {
     const showtime = await this.showtimesRepo.findOne({
       where: { id },
-      relations: ['movie', 'room'],
+      relations: {movie:true,room:true},
     });
     if (!showtime) throw new NotFoundException('Showtime not found');
     return showtime;

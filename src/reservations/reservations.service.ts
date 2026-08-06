@@ -102,15 +102,14 @@ export class ReservationsService {
   findMine(userId: string): Promise<Reservation[]> {
     return this.reservationsRepo.find({
       where: { userId },
-      relations: ['showtime', 'showtime.movie', 'seats', 'seats.seat'],
-      order: { createdAt: 'DESC' },
+      relations: { showtime: { movie: true }, seats: { seat: true } },      order: { createdAt: 'DESC' },
     });
   }
 
   findAll(): Promise<Reservation[]> {
     // admin view — all reservations across all users
     return this.reservationsRepo.find({
-      relations: ['user', 'showtime', 'showtime.movie', 'seats'],
+      relations: { user: true, showtime: { movie: true }, seats: true },
       order: { createdAt: 'DESC' },
     });
   }
@@ -119,7 +118,7 @@ export class ReservationsService {
   async cancel(userId: string, reservationId: string): Promise<Reservation> {
     const reservation = await this.reservationsRepo.findOne({
       where: { id: reservationId },
-      relations: ['showtime'],
+      relations: {showtime:true},
     });
     if (!reservation) throw new NotFoundException('Reservation not found');
     if (reservation.userId !== userId) {

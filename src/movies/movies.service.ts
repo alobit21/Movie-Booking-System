@@ -21,13 +21,13 @@ export class MoviesService {
   ) {}
 
   findAll(): Promise<Movie[]> {
-    return this.moviesRepo.find({ relations: ['genres'] });
+    return this.moviesRepo.find({ relations:{ genres: true } });
   }
 
   async findById(id: string): Promise<Movie> {
     const movie = await this.moviesRepo.findOne({
       where: { id },
-      relations: ['genres'],
+      relations: { genres: true },
     });
     if (!movie) throw new NotFoundException('Movie not found');
     return movie;
