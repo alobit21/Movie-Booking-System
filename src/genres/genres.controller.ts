@@ -1,7 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GenresService } from './genres.service';
 import { CreateGenreDto } from './dto/create-genre.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @ApiTags('genres')
 @Controller('genres')
@@ -14,15 +17,19 @@ export class GenresController {
     return this.genresService.findAll();
   }
 
-  // TODO: guard with @Roles('admin') once auth module exists
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: '[Admin] Create a genre' })
   create(@Body() dto: CreateGenreDto) {
     return this.genresService.create(dto.name);
   }
 
-  // TODO: guard with @Roles('admin') once auth module exists
   @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: '[Admin] Delete a genre' })
   remove(@Param('id') id: string) {
     return this.genresService.remove(id);

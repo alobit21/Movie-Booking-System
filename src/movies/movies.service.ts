@@ -21,7 +21,7 @@ export class MoviesService {
   ) {}
 
   findAll(): Promise<Movie[]> {
-    return this.moviesRepo.find({ relations:{ genres: true } });
+    return this.moviesRepo.find({ relations: { genres: true } });
   }
 
   async findById(id: string): Promise<Movie> {

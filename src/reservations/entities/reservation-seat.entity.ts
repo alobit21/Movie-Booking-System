@@ -14,28 +14,28 @@ import { Seat } from '../../rooms/entities/seat.entity';
 @Unique(['showtime', 'seat']) // <-- DB-level overbooking guard (Approach B)
 export class ReservationSeat {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string | undefined;
 
   @ManyToOne(() => Reservation, (reservation) => reservation.seats, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'reservationId' })
-  reservation: Reservation;
+  reservation: Reservation | undefined;
 
   @Column()
-  reservationId: string;
+  reservationId: string | undefined;
 
   @ManyToOne(() => Showtime, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'showtimeId' })
-  showtime: Showtime;
+  showtime: Showtime | undefined;
 
   @Column()
-  showtimeId: string;
+  showtimeId: string | undefined;
 
   @ManyToOne(() => Seat, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'seatId' })
-  seat: Seat;
+  seat: Seat | undefined;
 
   @Column()
-  seatId: string;
+  seatId: string | undefined;
 }

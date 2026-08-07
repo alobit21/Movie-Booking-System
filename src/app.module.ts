@@ -7,6 +7,7 @@ import { MoviesModule } from './movies/movies.module';
 import { RoomsModule } from './rooms/rooms.module';
 import { ShowtimesModule } from './showtimes/showtimes.module';
 import { ReservationsModule } from './reservations/reservations.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { ReservationsModule } from './reservations/reservations.module';
     RoomsModule,
     ShowtimesModule,
     ReservationsModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

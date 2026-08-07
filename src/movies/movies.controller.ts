@@ -1,14 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @ApiTags('movies')
 @Controller('movies')
 export class MoviesController {
   constructor(private readonly moviesService: MoviesService) {}
 
+  // browsing stays public — no login required
   @Get()
   @ApiOperation({ summary: 'List all movies with their genres' })
   @ApiResponse({ status: 200, description: 'Array of movies' })
@@ -24,23 +28,29 @@ export class MoviesController {
     return this.moviesService.findById(id);
   }
 
-  // TODO: guard with @Roles('admin') once auth module exists
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: '[Admin] Create a movie' })
   @ApiResponse({ status: 201, description: 'Movie created' })
   create(@Body() dto: CreateMovieDto) {
     return this.moviesService.create(dto);
   }
 
-  // TODO: guard with @Roles('admin') once auth module exists
   @Patch(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: '[Admin] Update a movie' })
   update(@Param('id') id: string, @Body() dto: UpdateMovieDto) {
     return this.moviesService.update(id, dto);
   }
 
-  // TODO: guard with @Roles('admin') once auth module exists
   @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: '[Admin] Delete a movie' })
   remove(@Param('id') id: string) {
     return this.moviesService.remove(id);
